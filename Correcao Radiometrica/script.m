@@ -53,5 +53,3 @@ output_path = 'imagem_radiancia.tif';
 % Normalizar a imagem de radiância para o intervalo [0, 1]
 normalized_radiance_image = (radiance_image - min(radiance_image(:))) / (max(radiance_image(:)) - min(radiance_image(:)));
 imwrite(normalized_radiance_image, output_path);
-
-
