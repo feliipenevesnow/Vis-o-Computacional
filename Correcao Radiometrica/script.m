@@ -1,11 +1,7 @@
 clc;
-
 clear all;
-
 close all;
-
 pkg load image;
-
 
 % Dados de entrada
 mrows = 960;
@@ -42,17 +38,20 @@ k = 1 + k0 * r + k1 * r.^2 + k2 * r.^3 + k3 * r.^4 + k4 * r.^5 + k5 * r.^6;
 vignetting_correction = 1 ./ k;
 corrected_image_vignetting = normalized_image .* vignetting_correction;
 
-% Cálculo da imagem de radiância
-radiance_image = corrected_image_vignetting .* (a1 / gain) .* ((normalized_image - pBL) ./ (exposureTime + a2 * y - a3 * exposureTime * y));
+% Cálculo da imagem de radiância corrigida
+radiance_image = (corrected_image_vignetting - pBL) .* (a1 / gain) ./ (exposureTime + a2 * y - a3 * exposureTime * y);
 
 % Exibir as imagens
 figure;
-subplot(1, 3, 1); imshow(normalized_image); title('Imagem Original');
-subplot(1, 3, 2); imshow(corrected_image_vignetting); title('Correção de Vignetting');
-subplot(1, 3, 3); imshow(radiance_image); title('Imagem de Radiância');
+subplot(2, 3, 1); imshow(normalized_image); title('Imagem Original');
+subplot(2, 3, 2); imshow(corrected_image_vignetting); title('Correção de Vignetting');
+subplot(2, 3, 3); imshow(radiance_image, []); title('Imagem de Radiância');
+subplot(2, 3, 5); imshow(vignetting_correction, []); title('Imagem de Vignetting');
 
 % Salvar a imagem de radiância em formato .tif
 output_path = 'imagem_radiancia.tif';
-imwrite(radiance_image, output_path);
+% Normalizar a imagem de radiância para o intervalo [0, 1]
+normalized_radiance_image = (radiance_image - min(radiance_image(:))) / (max(radiance_image(:)) - min(radiance_image(:)));
+imwrite(normalized_radiance_image, output_path);
 
 
