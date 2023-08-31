@@ -39,7 +39,7 @@ vignetting_correction = 1 ./ k;
 corrected_image_vignetting = normalized_image .* vignetting_correction;
 
 % Cálculo da imagem de radiância corrigida
-radiance_image = (corrected_image_vignetting - pBL) .* (a1 / gain) ./ (exposureTime + a2 * y - a3 * exposureTime * y);
+radiance_image = (vignetting_correction) .* (a1 / gain) .* ((normalized_image - pBL) ./ (exposureTime + a2 * y - a3 * exposureTime * y));
 
 % Exibir as imagens
 figure;
@@ -53,5 +53,3 @@ output_path = 'imagem_radiancia.tif';
 % Normalizar a imagem de radiância para o intervalo [0, 1]
 normalized_radiance_image = (radiance_image - min(radiance_image(:))) / (max(radiance_image(:)) - min(radiance_image(:)));
 imwrite(normalized_radiance_image, output_path);
-
-
