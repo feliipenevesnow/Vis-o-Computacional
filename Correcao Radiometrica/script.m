@@ -28,8 +28,8 @@ image_path = 'IMG_0080_5.tif';
 raw_image = imread(image_path);
 
 % Normalização dos valores dos pixels
-normalized_image = double(raw_image) / (2^Bits - 1);
-pBL = blackLevel / (2^Bits - 1);
+normalized_image = double(raw_image) / (2^Bits);
+pBL = blackLevel / (2^Bits);
 
 % Cálculo da imagem corrigida do efeito vignetting
 [x, y] = meshgrid(1:ncols, 1:mrows);
@@ -39,7 +39,7 @@ vignetting_correction = 1 ./ k;
 corrected_image_vignetting = normalized_image .* vignetting_correction;
 
 % Cálculo da imagem de radiância corrigida
-radiance_image = (corrected_image_vignetting - pBL) .* (a1 / gain) ./ (exposureTime + a2 * y - a3 * exposureTime * y);
+radiance_image = (vignetting_correction) .* (a1 / gain) .* ((normalized_image - pBL) ./ (exposureTime + a2 * y - a3 * exposureTime * y));
 
 % Exibir as imagens
 figure;
